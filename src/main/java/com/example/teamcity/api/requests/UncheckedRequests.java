@@ -6,6 +6,7 @@ import io.restassured.specification.RequestSpecification;
 
 import java.util.EnumMap;
 
+// Pattern Facade -  UncheckedRequests is a common class for checked requests for the specific user
 public class UncheckedRequests {
     private final EnumMap<Endpoint, UncheckedBase> requests = new EnumMap<>(Endpoint.class);
 

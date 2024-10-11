@@ -1,10 +1,14 @@
 package com.example.teamcity.api.BuildTypeTest;
 import com.example.teamcity.api.BaseApiTest;
+import com.example.teamcity.api.enums.Endpoint;
 import com.example.teamcity.api.models.BuildType;
 import com.example.teamcity.api.models.Project;
 import com.example.teamcity.api.models.User;
 import com.example.teamcity.api.requests.CheckedRequests;
+import com.example.teamcity.api.requests.unchecked.UncheckedBase;
 import com.example.teamcity.api.spec.Specifications;
+import org.apache.http.HttpStatus;
+import org.hamcrest.Matchers;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
@@ -20,28 +24,51 @@ public class userBuildTypeTest extends BaseApiTest {
     public void userCreatesBuildTypeTest() {
         var user = generate(User.class);
 
+        // create superUser
         superUserCheckedRequests.getRequest(USERS).create(user);
         var userCheckRequests = new CheckedRequests(Specifications.authSpec(user));
 
         var project = generate(Project.class);
-
+        //create project
         project = userCheckRequests.<Project>getRequest(PROJECTS).create(project);
 
+        // generate buildType by created project
         var buildType = generate(Arrays.asList(project), BuildType.class);
 
+        // create buildType based on userCheckRequests (getting buildType endpoint)
         userCheckRequests.getRequest(BUILD_TYPES).create(buildType);
 
+        // get buildTypeId and check the created buildType
         var createdBuildType = userCheckRequests.<BuildType>getRequest(BUILD_TYPES).read(buildType.getId());
         softy.assertEquals(buildType.getName(), createdBuildType.getName(), "Build type name is not correct");
     }
 
     @Test(description = "User should not be able to create two build types with the same id", groups = {"Negative", "CRUD"})
     public void userCreatesTwoBuildTypesWithTheSameIdTest() {
-        step("Create user");
-        step("Create project by the user");
-        step("Create buildType1 for project by the user");
-        step("Create buildType2 with same id as buildType1 for project by the user");
-        step("Check buildType2 was not created with bad request code");
+        var user = generate(User.class);
+
+        // create superUser
+        superUserCheckedRequests.getRequest(USERS).create(user);
+        var userCheckRequests = new CheckedRequests(Specifications.authSpec(user));
+
+        var project = generate(Project.class);
+        //create project by the user
+        project = userCheckRequests.<Project>getRequest(PROJECTS).create(project);
+
+        // generate buildType by created project
+        var buildType1 = generate(Arrays.asList(project), BuildType.class);
+        var buildType2 = generate(Arrays.asList(project), BuildType.class, buildType1.getId());
+
+        // create buildType1 for project by the user based on userCheckRequests (getting buildType endpoint)
+        userCheckRequests.getRequest(BUILD_TYPES).create(buildType1);
+
+        // Create buildType2 with same id as buildType1 for project by the user
+        // Check buildType2 was not created with bad request code
+        new UncheckedBase(Specifications.authSpec(user), BUILD_TYPES)
+                .create(buildType2)
+                .then()
+                .assertThat().statusCode(HttpStatus.SC_BAD_REQUEST)
+                .body(Matchers.containsString("The build configuration / template ID \"%s\" is already used by another configuration or template".formatted(buildType1.getId())));
     }
 
     @Test(description = "Project admin should be able to create build type for their project", groups = {"Positive", "Roles"})

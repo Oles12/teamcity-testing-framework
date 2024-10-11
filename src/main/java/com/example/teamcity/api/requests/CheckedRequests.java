@@ -6,7 +6,7 @@ import com.example.teamcity.api.requests.checked.CheckedBase;
 import io.restassured.specification.RequestSpecification;
 
 import java.util.EnumMap;
-
+// Pattern Facade -  CheckedRequests is a common class for checked requests for the specific user
 public class CheckedRequests {
     private final EnumMap<Endpoint, CheckedBase> requests = new EnumMap<>(Endpoint.class);
 
