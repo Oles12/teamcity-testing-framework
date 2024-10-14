@@ -4,9 +4,11 @@ import com.example.teamcity.api.annotations.Optional;
 import com.example.teamcity.api.annotations.Parameterizable;
 import com.example.teamcity.api.annotations.Random;
 import com.example.teamcity.api.models.BaseModel;
+import com.example.teamcity.api.models.TestData;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -83,6 +85,28 @@ public final class TestDataGenerator {
             throw new IllegalStateException("Cannot generate test data", e);
         }
     }
+
+    public static TestData generate(){
+        // Go through all the TestData class fields and for each entity that inherits BaseModel
+        // we call generate() with the transfer of already generated entities
+        try {
+            var instance = TestData.class.getDeclaredConstructor().newInstance();
+            var generatedModels = new ArrayList<BaseModel>();
+            for (var field : instance.getClass().getDeclaredFields()) {
+                field.setAccessible(true);
+                if (BaseModel.class.isAssignableFrom(field.getType())) {
+                    var generatedModel = generate(generatedModels, field.getType().asSubclass(BaseModel.class));
+                    field.set(instance, generatedModel);
+                    generatedModels.add(generatedModel);
+                }
+                field.setAccessible(false);
+            }
+            return instance;
+        } catch (InstantiationException |  IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new IllegalStateException("Cannot generate test data", e);
+        }
+    }
+
 
     // Метод, чтобы сгенерировать одну сущность. Передает пустой параметр generatedModels
     public static <T extends BaseModel> T generate(Class<T> generatorClass, Object... parameters) {
