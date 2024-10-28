@@ -1,0 +1,142 @@
+### 0 step - generate auth token
+GET http://admin:admin@192.168.1.98:8111/authenticationTest.html?csrf
+Accept: application/json
+
+### 1 step - create project
+###
+POST http://admin:admin@192.168.1.98:8111/app/rest/projects
+Content-Type: application/json
+Accept: application/json
+X-TC-CSRF-Token:d28b0657-908f-4fa3-8957-94aa5b802af3
+
+{
+  "parentProject": {
+    "locator": "_Root"
+  },
+  "name": "test_rJject_000"
+}
+
+###
+POST http://admin:admin@192.168.1.98:8111/app/rest/projects
+Content-Type: application/json
+Accept: application/json
+X-TC-CSRF-Token:7a98bc5d-c412-4be5-86b5-338c2e775671
+
+{
+
+  "name": "project with sub pr5",
+  "id": "id1233sub5",
+  "parentProject": {
+    "id": "id222",
+    "name": "name222",
+    "description": "Contains name: project with sub pr name project with sub pr",
+    "href": "/app/rest/projects/id:_Root",
+    "webUrl": "http://localhost:8111/project.html?projectId=_Root"
+  },
+  "deploymentDashboards": {
+    "count": 1
+  }
+
+  }
+}
+
+
+###
+POST http://admin:admin@192.168.1.98:8111/app/rest/projects
+Content-Type: application/json
+Accept: application/json
+X-TC-CSRF-Token:fda4cdce-c5e1-47d5-95e3-26b7df015dbd
+
+{
+
+  "name": "project with sub pr10",
+  "id": "id1233sub10",
+  "parentProject": {
+    "id": "id222000",
+    "locator": null
+  }
+
+}
+
+###
+##   "locator": "id222",
+##"parentProject": null
+###
+POST http://admin:admin@192.168.1.98:8111/app/rest/projects
+Content-Type: application/json
+Accept: application/json
+X-TC-CSRF-Token: 13b35680-4609-4f66-b79e-2ae2fa76f112
+
+{
+
+  "name": "project with sub pr7",
+  "id": "1233sub7"
+
+}
+
+###
+###,
+#  "copyAllAssociatedSettings": true
+###1.1 Get creatd project
+GET http://admin:admin@192.168.1.98:8111/app/rest/projects/id:id2221
+Content-Type: application/json
+Accept: application/json
+X-TC-CSRF-Token:52ede98c-0331-4fd3-9637-f215950420a6
+
+
+
+### 2 step - create build configuration
+POST http://admin:admin@192.168.1.98:8111/app/rest/buildTypes
+Content-Type: application/json
+Accept: application/json
+X-TC-CSRF-Token:0ee8ad9e-8817-4aa9-b50b-4cade76661fa
+
+{
+  "id": "id",
+  "name": "Print Hello World",
+  "project": {
+    "id": "id"
+  },
+  "steps": {
+    "step": [
+      {
+        "name": "Print Hello World",
+        "type": "simpleRunner",
+        "properties": {
+          "property": [
+            {
+              "name": "script.content",
+              "value": "echo 'Hello World!'"
+            },
+            {
+              "name": "teamcity.step.mode",
+              "value": "default"
+            },
+            {
+              "name": "use.custom.script",
+              "value": "true"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
+
+### 3 step - run build
+POST http://admin:admin@192.168.1.98:8111/app/rest/buildQueue
+Content-Type: application/json
+Accept: application/json
+X-TC-CSRF-Token:0ee8ad9e-8817-4aa9-b50b-4cade76661fa
+
+{
+  "buildType": {
+    "id": "id"
+  }
+}
+
+### 4 step - get build statuc details
+GET http://admin:admin@192.168.1.98:8111/app/rest/builds/id:3
+Content-Type: application/json
+Accept: application/json
+X-TC-CSRF-Token:0ee8ad9e-8817-4aa9-b50b-4cade76661fa
