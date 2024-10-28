@@ -17,6 +17,7 @@ public class BaseUiTest extends BaseTest {
     public void setupUITest(){
         Configuration.browser = Config.getProperty("browser");
         Configuration.baseUrl = "http://" + Config.getProperty("host");
+        Configuration.timeout = 7000;
         // !!DO NOT create UI tests with local browser
         // Then You run the tests on remote, and they don't work!
         Configuration.remote = Config.getProperty("remote");

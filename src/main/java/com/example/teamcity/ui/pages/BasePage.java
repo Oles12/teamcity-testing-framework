@@ -4,14 +4,18 @@ import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import com.example.teamcity.api.models.User;
 
+import java.time.Duration;
+
 import static com.codeborne.selenide.Selenide.$;
 
 public abstract class BasePage {
+    protected static final Duration BASE_WAITING = Duration.ofSeconds(30);
 
     private static final String LOGIN_URL = "/login.html";
     private SelenideElement inputUsername = $("#username");
     private SelenideElement inputPassword = $("#password");
     private SelenideElement inputSubmitLogin = $(".loginButton");
+
 
     public static LoginPage open(){
 

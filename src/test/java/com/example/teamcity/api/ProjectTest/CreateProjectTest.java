@@ -33,7 +33,7 @@ public class CreateProjectTest extends BaseApiTest {
         var createProject = userCheckRequests.<Project>getRequest(PROJECTS).create(testData.getProject());
 
         // get createdProject by id and check the created Project data
-        var createdProject = userCheckRequests.<Project>getRequest(PROJECTS).read(createProject.getId());
+        var createdProject = userCheckRequests.<Project>getRequest(PROJECTS).read("id:" + createProject.getId());
 
         responseValidator.ValidateProjectNameAndId(createdProject, testData.getProject());
     }
@@ -53,7 +53,7 @@ public class CreateProjectTest extends BaseApiTest {
         softy.assertNotEquals(createdProjectData.getId(), testData.getProject().getId(),"Project ID is not correct");
 
         // get createdProject by id and check the created Project data
-        var getProjectData = userCheckRequests.<Project>getRequest(PROJECTS).read(createdProjectData.getId());
+        var getProjectData = userCheckRequests.<Project>getRequest(PROJECTS).read("id:" + createdProjectData.getId());
         softy.assertEquals( getProjectData.getName(), testData.getProject().getName(),"Project name is not correct");
         // we expect that absent projectId will be automatically set upon Project creation
         softy.assertNotEquals(getProjectData.getId(), testData.getProject().getId(),"Project ID is not correct");
@@ -77,7 +77,7 @@ public class CreateProjectTest extends BaseApiTest {
         var subProject = userCheckRequests.<Project>getRequest(PROJECTS).create(sb.getProject());
 
         // get created SubProject by id and check the created Project data
-        var getCreatedSubProjectData = userCheckRequests.<Project>getRequest(PROJECTS).read(subProject.getId());
+        var getCreatedSubProjectData = userCheckRequests.<Project>getRequest(PROJECTS).read("id:" + subProject.getId());
 
         // validate created SubProject data
         responseValidator.ValidateProjectNameAndId(getCreatedSubProjectData,  subProject);

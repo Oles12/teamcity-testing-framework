@@ -1,14 +1,19 @@
 package com.example.teamcity.ui;
 
 import com.example.teamcity.api.enums.Endpoint;
+import com.example.teamcity.api.models.Project;
+import com.example.teamcity.api.models.TestData;
+import com.example.teamcity.ui.pages.ProjectPage;
 import com.example.teamcity.ui.pages.admin.CreateProjectPage;
 import org.testng.annotations.Test;
 import com.example.teamcity.ui.pages.LoginPage;
+
+import static com.codeborne.selenide.Condition.exactText;
 import static io.qameta.allure.Allure.step;
 
 @Test(groups = {"Regression"})
 public class CreateProjectTest extends BaseUiTest{
-    private static final String REPO_URL = "https://github.com/AlexPshe/spring-core-for-qa";
+    private static final String REPO_URL = "https://github.com/Oles12/teamcity-testing-framework";
 
     @Test(description = "User should be able to create project", groups = {"Positive"})
     public void userCreatesProject() {
@@ -26,14 +31,17 @@ public class CreateProjectTest extends BaseUiTest{
                 .createForm(REPO_URL)
                 .setupProject(testData.getProject().getName(), testData.getBuildType().getName());
 
-
         // check state on API
         // (check data is transferred correctly from UI to API)
-        step("Check that all entities (project, build type) was successfully created with correct data on API level");
+        var createdProject = superUserCheckedRequests.<Project>getRequest(Endpoint.PROJECTS)
+                .read("name:" + testData.getProject().getName());
+        softy.assertNotNull(createdProject);
 
         // check state on UI
         // (корректность считывания данных и отображение данных на UI)
-        step("Check that project is visible on Projects Page (http://localhost:8111/favorite/projects)");
+        //step("Check that project is visible on Projects Page (http://localhost:8111/favorite/projects)");
+        ProjectPage.open(createdProject.getId())
+                .title.shouldHave(exactText(testData.getProject().getName()));
 
     }
 
