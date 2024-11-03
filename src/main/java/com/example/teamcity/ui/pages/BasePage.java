@@ -1,10 +1,14 @@
 package com.example.teamcity.ui.pages;
 
+import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import com.example.teamcity.api.models.User;
+import com.example.teamcity.ui.elements.BasePageElement;
 
 import java.time.Duration;
+import java.util.List;
+import java.util.function.Function;
 
 import static com.codeborne.selenide.Selenide.$;
 
@@ -18,7 +22,6 @@ public abstract class BasePage {
 
 
     public static LoginPage open(){
-
         return Selenide.open(LOGIN_URL, LoginPage.class);
     }
 
@@ -30,5 +33,16 @@ public abstract class BasePage {
 
         return Selenide.page(ProjectsPage.class);
     }
+
+    // ElementCollection: Selenide Element 1, Selenide Element 2 и тд
+    // collection.stream() -> Конвеер: Selenide Element 1, Selenide Element 2 и тд
+    // creator(Selenide Element 1) -> T -> add to list
+    // creator(Selenide Element 2) -> T -> add to list
+    protected <T extends BasePageElement> List<T> generatePageElements(
+            ElementsCollection collection, Function<SelenideElement, T> creator)
+    {
+        return collection.stream().map(creator).toList();
+    }
+
 
 }
