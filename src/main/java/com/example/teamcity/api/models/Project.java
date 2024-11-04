@@ -25,6 +25,10 @@ public class Project extends BaseModel{
     @Optional
     private String locator;
 
+
     @Optional
     private Project parentProject;
+
+    @Optional
+    private BuildTypes buildTypes;
 }

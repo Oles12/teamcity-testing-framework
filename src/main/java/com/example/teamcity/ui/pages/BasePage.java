@@ -16,9 +16,9 @@ public abstract class BasePage {
     protected static final Duration BASE_WAITING = Duration.ofSeconds(30);
 
     private static final String LOGIN_URL = "/login.html";
-    private SelenideElement inputUsername = $("#username");
-    private SelenideElement inputPassword = $("#password");
-    private SelenideElement inputSubmitLogin = $(".loginButton");
+    private final SelenideElement inputUsername = $("#username");
+    private final SelenideElement inputPassword = $("#password");
+    private final SelenideElement inputSubmitLogin = $(".loginButton");
 
 
     public static LoginPage open(){
@@ -43,6 +43,5 @@ public abstract class BasePage {
     {
         return collection.stream().map(creator).toList();
     }
-
 
 }

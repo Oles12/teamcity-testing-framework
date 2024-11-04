@@ -22,4 +22,9 @@ public abstract class CreateBasePage extends BasePage {
         submitButton.click();
         connectionSuccessfulMessage.should(appear, BASE_WAITING);
     }
+
+    protected void setupCreateForm(String projectName, String buildTypeName) {
+        buildTypeNameInput.val(buildTypeName);
+        submitButton.click();
+    }
 }

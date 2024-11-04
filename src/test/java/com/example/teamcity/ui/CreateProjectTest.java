@@ -12,7 +12,6 @@ import static io.qameta.allure.Allure.step;
 
 @Test(groups = {"Regression"})
 public class CreateProjectTest extends BaseUiTest{
-    private static final String REPO_URL = "https://github.com/Oles12/teamcity-testing-framework";
 
     @Test(description = "User should be able to create project", groups = {"Positive"})
     public void userCreatesProject() {
@@ -28,10 +27,10 @@ public class CreateProjectTest extends BaseUiTest{
 
         CreateProjectPage.open("_Root")
                 .createForm(REPO_URL)
-                .setupProject(testData.getProject().getName(), testData.getBuildType().getName());
+                .setupCreateForm(testData.getProject().getName(), testData.getBuildType().getName());
 
         // check state on API
-        // (check data is transferred correctly from UI to API)
+        // that data is transferred correctly from UI to API
         var createdProject = superUserCheckedRequests.<Project>getRequest(Endpoint.PROJECTS)
                 .read("name:" + testData.getProject().getName());
         softy.assertNotNull(createdProject);

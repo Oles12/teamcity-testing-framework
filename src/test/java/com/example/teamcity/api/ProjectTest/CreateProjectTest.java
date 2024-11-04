@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.example.teamcity.api.Utils.StringNameConversion.convertNameToId;
 import static com.example.teamcity.api.enums.Endpoint.*;
 import static com.example.teamcity.api.generators.TestDataGenerator.generate;
 
@@ -72,7 +73,7 @@ public class CreateProjectTest extends BaseApiTest {
         var parentProject = userCheckRequests.<Project>getRequest(PROJECTS).create(testData.getProject());
 
         var sb = generate();
-        sb.getProject().setParentProject((new Project(parentProject.getName(), parentProject.getId(), null, null)));
+        sb.getProject().setParentProject((new Project(parentProject.getName(), parentProject.getId(), null, null, null)));
         // create SubProject with the existing parent project
         var subProject = userCheckRequests.<Project>getRequest(PROJECTS).create(sb.getProject());
 
@@ -96,7 +97,7 @@ public class CreateProjectTest extends BaseApiTest {
         var NonExistingParentProject = generate();
 
         var subProject = generate();
-        subProject.getProject().setParentProject((new Project(NonExistingParentProject.getProject().getName(), NonExistingParentProject.getProject().getId(), null, null)));
+        subProject.getProject().setParentProject((new Project(NonExistingParentProject.getProject().getName(), NonExistingParentProject.getProject().getId(), null, null, null)));
 
         // create subproject for non-existing parent project
         new UncheckedBase(Specifications.authSpec(testData.getUser()), PROJECTS)
@@ -233,50 +234,4 @@ public class CreateProjectTest extends BaseApiTest {
                 .assertThat().statusCode(HttpStatus.SC_BAD_REQUEST)
                 .body(Matchers.containsString("Project name cannot be empty"));
         }
-
-
-   /** Converts 'name' value to 'id' value using special format string
-    Example:
-    * Input: test_rJject_000 → Output: TestRJject
-    * Input: TestnYTYkHxmbv → Output: TestNYTYkHxmbvv
-    */
-    private static String convertNameToId(String name) {
-        // Remove underscores and capitalize the character immediately following each underscore
-        String id = name.replaceAll("_(.)", "$1");
-
-        // Capitalize the first letter of the string
-        Pattern pattern = Pattern.compile("^[a-z]");
-        Matcher matcher = pattern.matcher(id);
-        if (matcher.find()) {
-            id = matcher.replaceFirst(matcher.group(0).toUpperCase());
-        }
-
-        // Manually loop through characters and capitalize letters after lowercase sequences
-        StringBuilder result = new StringBuilder();
-        char[] chars = id.toCharArray();
-        boolean capitalizeNext = false;
-
-        for (int i = 0; i < chars.length; i++) {
-            char currentChar = chars[i];
-
-            if (i == 0) {
-                // Capitalize first character
-                result.append(Character.toUpperCase(currentChar));
-            } else if (capitalizeNext) {
-                result.append(Character.toUpperCase(currentChar));
-                capitalizeNext = false;
-            } else {
-                // Append as-is, if not uppercase already
-                if (Character.isLowerCase(currentChar)) {
-                    capitalizeNext = (i < chars.length - 1 && Character.isUpperCase(chars[i + 1]));
-                }
-                result.append(currentChar);
-            }
-        }
-
-        // Remove any leading zeros after the last underscore
-        id = result.toString().replaceAll("0+", "");
-
-        return id;
-    }
 }

@@ -18,9 +18,9 @@ public class CreateProjectPage extends CreateBasePage{
         return this;
     }
 
-    public void setupProject(String projectName, String buildTypeName) {
+    @Override
+    public void setupCreateForm(String projectName, String buildTypeName) {
         projectNameInput.val(projectName);
-        buildTypeNameInput.val(buildTypeName);
-        submitButton.click();
+        super.setupCreateForm(projectName, buildTypeName);
     }
 }
