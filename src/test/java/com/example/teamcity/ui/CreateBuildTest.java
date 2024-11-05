@@ -14,7 +14,7 @@ import org.testng.annotations.Test;
 import static com.codeborne.selenide.Condition.exactText;
 import static com.example.teamcity.api.Utils.StringNameConversion.convertNameToId;
 import static com.example.teamcity.api.enums.Endpoint.*;
-import static com.example.teamcity.ui.pages.admin.CreateBuildPage.ValidateBuildNameErrorMessage;
+import static com.example.teamcity.ui.pages.admin.CreateBuildPage.validateBuildNameErrorMessage;
 
 @Test(groups = {"Regression"})
 public class CreateBuildTest extends BaseUiTest{
@@ -57,13 +57,27 @@ public class CreateBuildTest extends BaseUiTest{
         CreateBuildPage.open(createdProject.getId())
                 .createForm(REPO_URL)
                 .setupCreateForm(testData.getProject().getName(), "");
-        softy.assertTrue(ValidateBuildNameErrorMessage());
+        softy.assertTrue(validateBuildNameErrorMessage());
 
         // check state on API: data is transferred correctly from UI to API
         var getProjectData = superUserCheckedRequests.<Project>getRequest(Endpoint.PROJECTS)
                 .read("name:" + testData.getProject().getName());
         softy.assertTrue(getProjectData.getBuildTypes().getBuildType().isEmpty());
         softy.assertTrue(getProjectData.getBuildTypes().getCount() == 0);
+    }
+
+    @Test(description = "User should be able to cancel build creation and return to the initial build creation form",
+            groups = {"Positive", "UI"})
+    public void cancelCreateBuild() {
+        // Precondition:
+        var createdProject = createProjectAPI();
+        LoginPage.open().login(testData.getUser());
+
+        // Create Build for the project
+        CreateBuildPage.open(createdProject.getId())
+                .createForm(REPO_URL)
+                .clickCancelBuildCreation()
+                .validateCancelBuildCreation();
     }
 
     private Project createProjectAPI() {
@@ -74,5 +88,4 @@ public class CreateBuildTest extends BaseUiTest{
         //create Project by the user
         return userCheckRequests.<Project>getRequest(PROJECTS).create(testData.getProject());
     }
-
 }
