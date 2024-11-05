@@ -16,12 +16,11 @@ public class BuildConfigurationTest extends BaseApiTest{
                 .password("admin")
                 .build();
         var token = RestAssured
-                .given(Specifications.getSpec().authSpec(user))
+                .given(Specifications.authSpec(user))
                 .get("http://admin:admin@192.168.1.98:8111/authenticationTest.html?csrf")
                 .then().assertThat().statusCode(HttpStatus.SC_OK)
                 .extract().asString();
 
         System.out.println(token);
     }
-
 }
