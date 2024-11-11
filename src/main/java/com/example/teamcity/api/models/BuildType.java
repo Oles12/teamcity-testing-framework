@@ -9,6 +9,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Builder
 @Data
 @AllArgsConstructor
@@ -22,5 +24,4 @@ public class BuildType extends BaseModel{
     private String name;
     private Project project;
     private Steps steps;
-
 }
