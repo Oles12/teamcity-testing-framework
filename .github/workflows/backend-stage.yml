@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Build backend
-        run: echo Building the backend build ( running unit tests, creating and publishing DOcker image with changes)
+        run: echo Building the backend build \( running unit tests, creating and publishing Docker image with changes\)
 
   deploy-stage:
     needs: build

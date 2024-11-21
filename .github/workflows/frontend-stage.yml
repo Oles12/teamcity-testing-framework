@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Build frontend
-        run: echo Building the frontend build ( running unit tests, running linters, creating and publishing Docker image with changes)
+        run: echo Building the frontend build \( running unit tests, running linters, creating and publishing Docker image with changes\)
 
   deploy-stage:
     needs: test
