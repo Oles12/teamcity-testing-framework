@@ -36,3 +36,21 @@ jobs:
         continue-on-error: true
         # We specify group (-Dgroups=Regression) because we don't want to run tests that related to Teamcity setup
         run: ./mvnw test -Dtest='com.example.teamcity.${{ inputs.package }}.**' -Dgroups=Regression
+
+      # Создаем репорт с покрытием  API тестов, основанном на Swagger
+      # Документация: https://github.com/viclovsky/swagger-coverage
+      # Нужно обязательно добавить фильтр 'new SwaggerCoverageRestAssured' в RestAssured (в Specifications класс, где строится запрос)
+      - name: Run Swagger Coverage
+        continue-on-error: true
+        if: ${{inputs.coverage == 'api' }}
+        run: .swagger-coverage-commandline/bin/swagger-coverage-commandline -s http://$HOST:8111/app/rest/swagger.json -i target/swagger-coverage-output
+
+      # Сохраняем Swagger Report в артифакты GitHub Actions
+      - name: Save Swagger Coverage
+        uses: actions/upload-artifact@v4
+        if: ${{inputs.coverage == 'api' }}
+        with:
+          name: swagger-coverage
+          path: |
+            swagger-coverage-report.html
+            swagger-coverage-results.json
