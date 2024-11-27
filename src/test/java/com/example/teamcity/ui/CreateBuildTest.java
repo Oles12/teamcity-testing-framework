@@ -27,8 +27,9 @@ public class CreateBuildTest extends BaseUiTest{
                 .createForm(REPO_URL)
                 .setupCreateForm(testData.getProject().getName(), testData.getBuildType().getName());
 
+        //superUserCheckedRequests.<BuildType>getRequest(BUILD_TYPES)
         // check state on API: data is transferred correctly from UI to API
-        var createdBuildType = superUserCheckedRequests.<BuildType>getRequest(BUILD_TYPES)
+        var createdBuildType = new CheckedRequests(Specifications.authSpec(testData.getUser())).<BuildType>getRequest(BUILD_TYPES)
                 .read("project:id:" + createdProject.getId());
         softy.assertNotNull(createdBuildType);
 
