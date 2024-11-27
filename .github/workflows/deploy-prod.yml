@@ -1,0 +1,19 @@
+name: Deploy to prod
+
+on: workflow_call
+
+# These are approximate steps how the backend, frontend pipeline can look like
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy backend to prod
+        run: echo Backend deploy is happening to prod
+
+  deploy-stage:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy frontend to prod
+        run: echo Frontend deploy is happening to prod
