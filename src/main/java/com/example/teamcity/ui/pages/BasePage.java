@@ -5,6 +5,7 @@ import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import com.example.teamcity.api.models.User;
 import com.example.teamcity.ui.elements.BasePageElement;
+import io.qameta.allure.Step;
 
 import java.time.Duration;
 import java.util.List;
@@ -21,11 +22,12 @@ public abstract class BasePage {
     private final SelenideElement inputPassword = $("#password");
     private final SelenideElement inputSubmitLogin = $(".loginButton");
 
-
+    @Step("Open login page")
     public static LoginPage open(){
         return Selenide.open(LOGIN_URL, LoginPage.class);
     }
 
+    @Step("Login as {user.username}")
     public ProjectsPage login(User user){
         // Method .val - contains clear + sendKeys
         inputUsername.val(user.getUsername());
