@@ -16,33 +16,37 @@ public class CreateBuildPage extends CreateBasePage{
     protected SelenideElement cancelButton = $(".saveButtonsBlock [class='btn cancel']");
     protected static SelenideElement createFromUrlBtn = $(Selectors.byAttribute("href", "#createFromUrl"));
 
-    @Step("Open create Build page")
+    @Step("Open create Build page for project: {projectId}")
     public static CreateBuildPage open(String projectId) {
         return Selenide.open(CREATE_URL.formatted(projectId, BUILD_SHOW_MODE), CreateBuildPage.class);
     }
 
-    @Step
+    @Step("Open Build create form")
     public CreateBuildPage createForm(String url) {
         baseCreateForm(url);
         return this;
     }
 
-    @Step("Setup create Build form with projectName {projectName} and buildType {buildTypeName}")
+    @Step("Setup create Build form with projectName: {projectName} and buildType: {buildTypeName}")
     @Override
     public void setupCreateForm(String projectName, String buildTypeName) {
         super.setupCreateForm(projectName, buildTypeName);
     }
 
+    @Step
     public CreateBuildPage clickCancelBuildCreation(){
         cancelButton.click();
         return this;
     }
 
+    @Step
     public CreateBuildPage validateCancelBuildCreation() {
         createFromUrlBtn.should(visible, BASE_WAITING);
         urlInput.should(visible).shouldBe(Condition.empty);
         return this;
     }
+
+    @Step
     public static boolean validateBuildNameErrorMessage() {
         errorBuildTypeNameMessage.should(appear, BASE_WAITING);
        return errorBuildTypeNameMessage.text().contains("Build configuration name must not be empty");
