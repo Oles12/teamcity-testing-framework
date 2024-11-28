@@ -8,7 +8,6 @@ import com.example.teamcity.api.spec.Specifications;
 import com.example.teamcity.ui.pages.LoginPage;
 import com.example.teamcity.ui.pages.ProjectsPage;
 import com.example.teamcity.ui.pages.admin.CreateBuildPage;
-import io.qameta.allure.Step;
 import org.testng.annotations.Test;
 
 import static com.example.teamcity.api.enums.Endpoint.*;
