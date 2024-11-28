@@ -1,0 +1,21 @@
+name: Deploy backend
+
+on: workflow_call
+
+# These are approximate steps how the backend pipeline can look like
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build backend
+        run: echo Building the backend build \( running unit tests, creating and publishing Docker image with changes\)
+
+  deploy-stage:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy backend to stage/review app
+        run: echo Backend deploy is happening
+
+

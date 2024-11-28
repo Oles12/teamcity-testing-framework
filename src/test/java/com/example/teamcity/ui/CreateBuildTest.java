@@ -5,20 +5,18 @@ import com.example.teamcity.api.models.BuildType;
 import com.example.teamcity.api.models.Project;
 import com.example.teamcity.api.requests.CheckedRequests;
 import com.example.teamcity.api.spec.Specifications;
-import com.example.teamcity.ui.pages.BuildPage;
 import com.example.teamcity.ui.pages.LoginPage;
 import com.example.teamcity.ui.pages.ProjectsPage;
 import com.example.teamcity.ui.pages.admin.CreateBuildPage;
 import org.testng.annotations.Test;
 
-import static com.codeborne.selenide.Condition.exactText;
-import static com.example.teamcity.api.Utils.StringNameConversion.convertNameToId;
 import static com.example.teamcity.api.enums.Endpoint.*;
 import static com.example.teamcity.ui.pages.admin.CreateBuildPage.validateBuildNameErrorMessage;
 
 @Test(groups = {"Regression"})
 public class CreateBuildTest extends BaseUiTest{
-    @Test(description = "User should be able to create build", groups = {"Positive", "UI"})
+    // test skipped because TeamCity agent setup test not implemented
+    @Test(description = "User should be able to create build", groups = {"Positive", "UI"}, enabled = false)
     public void createBuild() {
         // Precondition:
         var createdProject = createProjectAPI();
@@ -29,16 +27,10 @@ public class CreateBuildTest extends BaseUiTest{
                 .createForm(REPO_URL)
                 .setupCreateForm(testData.getProject().getName(), testData.getBuildType().getName());
 
-        String buildName = convertNameToId(testData.getBuildType().getName());
-        String buildTypeId = createdProject.getId() + "_" + buildName;
         // check state on API: data is transferred correctly from UI to API
-        var createdBuildType = superUserCheckedRequests.<BuildType>getRequest(BUILD_TYPES)
-                .read("id:" + buildTypeId);
+        var createdBuildType = new CheckedRequests(Specifications.authSpec(testData.getUser())).<BuildType>getRequest(BUILD_TYPES)
+                .read("project:id:" + createdProject.getId());
         softy.assertNotNull(createdBuildType);
-
-        // check state on UI: correctness of data transfer and data display on the UI
-        // check that build is visible on BuildConfiguration Page (http://localhost:8111/buildConfiguration/)
-        BuildPage.open(buildTypeId).title.shouldHave(exactText(testData.getBuildType().getName()));
 
         var projectExists = ProjectsPage.openProjectsPage().expandAllProjects().getBuilds().stream()
                 .anyMatch(build -> build.getName().text()

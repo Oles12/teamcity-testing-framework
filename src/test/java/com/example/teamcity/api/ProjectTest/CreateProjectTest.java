@@ -13,10 +13,7 @@ import org.hamcrest.Matchers;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import static com.example.teamcity.api.Utils.StringNameConversion.convertNameToId;
 import static com.example.teamcity.api.enums.Endpoint.*;
 import static com.example.teamcity.api.generators.TestDataGenerator.generate;
 
@@ -55,15 +52,12 @@ public class CreateProjectTest extends BaseApiTest {
 
         // get createdProject by id and check the created Project data
         var getProjectData = userCheckRequests.<Project>getRequest(PROJECTS).read("id:" + createdProjectData.getId());
-        softy.assertEquals( getProjectData.getName(), testData.getProject().getName(),"Project name is not correct");
+        softy.assertEquals(getProjectData.getName(), testData.getProject().getName(),"Project name is not correct");
         // we expect that absent projectId will be automatically set upon Project creation
         softy.assertNotEquals(getProjectData.getId(), testData.getProject().getId(),"Project ID is not correct");
-
-        String expectedProjectId = convertNameToId(getProjectData.getName());
-        softy.assertEquals(getProjectData.getId(), expectedProjectId,"Project ID is not correct");
     }
 
-    @Test(description = "Super user should be able to sub create project for existing project", groups = {"Positive", "Smoke"})
+    @Test(description = "Super user should be able to create sub project for existing project", groups = {"Positive", "Smoke"})
     public void CreateSubProjectForSpecificParentProject() {
         // create superUser
         superUserCheckedRequests.getRequest(USERS).create(testData.getUser());

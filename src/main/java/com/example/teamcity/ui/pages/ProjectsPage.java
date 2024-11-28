@@ -6,6 +6,7 @@ import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import com.example.teamcity.ui.elements.BuildElements;
 import com.example.teamcity.ui.elements.ProjectElement;
+import io.qameta.allure.Step;
 
 import java.util.List;
 
@@ -28,6 +29,7 @@ public class ProjectsPage extends BasePage{
     // UI elements -> List<Object>
     // ElementCollection -> List<BasePageElement>
 
+    @Step
     public static ProjectsPage openProjectsPage() {
         return Selenide.open(PROJECTS_URL, ProjectsPage.class);
     }

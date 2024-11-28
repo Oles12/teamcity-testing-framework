@@ -5,6 +5,7 @@ import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import com.example.teamcity.api.models.User;
 import com.example.teamcity.ui.elements.BasePageElement;
+import io.qameta.allure.Step;
 
 import java.time.Duration;
 import java.util.List;
@@ -14,17 +15,19 @@ import static com.codeborne.selenide.Selenide.$;
 
 public abstract class BasePage {
     protected static final Duration BASE_WAITING = Duration.ofSeconds(30);
+    protected static final Duration LONG_WAITING = Duration.ofMinutes(5);
 
     private static final String LOGIN_URL = "/login.html";
     private final SelenideElement inputUsername = $("#username");
     private final SelenideElement inputPassword = $("#password");
     private final SelenideElement inputSubmitLogin = $(".loginButton");
 
-
+    @Step("Open login page")
     public static LoginPage open(){
         return Selenide.open(LOGIN_URL, LoginPage.class);
     }
 
+    @Step("Login as {user.username}")
     public ProjectsPage login(User user){
         // Method .val - contains clear + sendKeys
         inputUsername.val(user.getUsername());
