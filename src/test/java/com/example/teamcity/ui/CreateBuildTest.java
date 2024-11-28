@@ -16,7 +16,8 @@ import static com.example.teamcity.ui.pages.admin.CreateBuildPage.validateBuildN
 
 @Test(groups = {"Regression"})
 public class CreateBuildTest extends BaseUiTest{
-    @Test(description = "User should be able to create build", groups = {"Positive", "UI"})
+    // test skipped because TeamCity agent setup test not implemented
+    @Test(description = "User should be able to create build", groups = {"Positive", "UI"}, enabled = false)
     public void createBuild() {
         // Precondition:
         var createdProject = createProjectAPI();
@@ -28,7 +29,7 @@ public class CreateBuildTest extends BaseUiTest{
                 .setupCreateForm(testData.getProject().getName(), testData.getBuildType().getName());
 
         // check state on API: data is transferred correctly from UI to API
-        var createdBuildType = superUserCheckedRequests.<BuildType>getRequest(BUILD_TYPES)
+        var createdBuildType = new CheckedRequests(Specifications.authSpec(testData.getUser())).<BuildType>getRequest(BUILD_TYPES)
                 .read("project:id:" + createdProject.getId());
         softy.assertNotNull(createdBuildType);
 
