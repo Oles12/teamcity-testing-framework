@@ -19,11 +19,12 @@ public class FirstStartPage extends BasePage {
         restoreButton.shouldBe(Condition.visible, LONG_WAITING);
     }
 
+    @Step
     public static FirstStartPage openStartPage() {
         return Selenide.open("/", FirstStartPage.class);
     }
 
-    @Step
+    @Step("Setup first start page")
     public FirstStartPage setupFirstStart() {
         proceedButton.click();
         dbTypeSelect.shouldBe(Condition.visible, LONG_WAITING);
